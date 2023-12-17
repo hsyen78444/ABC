@@ -1,3 +1,15 @@
+
+import java.util.Scanner;
+
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+/**
+ *
+ * @author User
+ */
 public class Main {
     public static void main(String[] args) {
         Company company = new Company();
@@ -7,20 +19,20 @@ public class Main {
             System.out.println("1. Register\n2. Login\n3. Exit");
             System.out.print("Enter your choice: ");
             String choice = sc.nextLine();
-            String username,password,accessLevel, secretKey;
+            String name, username, password, secretKey;
             
             switch (choice) {
                 case "1":
                     System.out.print("Enter secret key: ");
                     secretKey = sc.nextLine();
                     if (company.validateSecretKey(secretKey)) {
+                        System.out.print("Enter your name: ");
+                        name = sc.nextLine();
                         System.out.print("Enter username: ");
                         username = sc.nextLine();
                         System.out.print("Enter password: ");
                         password = sc.nextLine();
-                        System.out.print("Enter access level (e.g., sales, admin): ");
-                        accessLevel = sc.nextLine();
-                        company.registerEmployee(username, password, accessLevel);
+                        company.registerEmployee(name, username, password);
                         System.out.println("");
                     }
                     else {
