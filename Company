@@ -1,0 +1,52 @@
+public class Company {
+    ArrayList<Employee> employees;
+    
+    public Company() {
+        employees = new ArrayList<>();
+    }
+    
+    public boolean validateSecretKey(String enteredKey) {
+        String secretKey = "leeCars";
+        return secretKey.equals(enteredKey);
+    }
+    
+    public void registerEmployee(String username, String password, String accessLevel) {
+        Employee newEmployee = new Employee(username, password, accessLevel);
+        employees.add(newEmployee);
+        System.out.println("Employee " + username + " registered successfully");
+    }
+
+    public void login(String username, String password) {
+        for (Employee i: employees) {
+            if (i.username.equals(username) && i.password.equals(password)) {
+                System.out.println("Welcome, " + username + " ! Access Level :" + i.accessLevel);
+                performLoggedInActions();
+                return;
+            }
+        }
+        System.out.println("Invalid username or password. Please try again");
+    }
+    
+    private void performLoggedInActions() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("\nLogged In Actions:");
+            System.out.println("1. Perform Action\n2. Logout");
+            System.out.print("Enter your choice: ");
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    System.out.println("Performing action...");
+                    break;
+
+                case "2":
+                    System.out.println("Logging out.");
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
