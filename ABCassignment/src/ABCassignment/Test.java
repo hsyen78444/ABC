@@ -125,8 +125,8 @@ public class Test {
          }
          return new String (password);
     }
-    public static void addManagement(String selc,int employeeStatus){
-        if(employeeStatus==1){
+    public static void addManagement(String selc){
+        if(selc.equals("1")){
         StringBuilder sb=new StringBuilder();
             if (Employee.record<10){
                sb.append("E000"+Integer.toString(Employee.record));
@@ -159,7 +159,10 @@ public class Test {
             }  
             importEmployee(selc);
         }
+        else{
+            System.out.print("Please import employee data");
         }
+    }
     public static void filterForSalesLevel (Customer[] c,Sales[] s){
         Scanner scanner=new Scanner(System.in);
         String search="";
