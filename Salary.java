@@ -73,47 +73,7 @@ public class Salary{
         m.employeeSalary();
     }
 
-    // public static void sellerImportType(){
-    //     Scanner k = new Scanner(System.in);
-    //     saleEmployee s = new saleEmployee();
-
-    //     System.out.print("Enter 1 to type in sale \nEnter 2 to import sale \nEnter your choice: ");
-    //     int choice = k.nextInt();
-    //     System.out.println();
-
-    //     switch (choice) {
-    //         case 1 :
-    //             s.addSale();
-    //             break;
-    //         case 2 :
-    //             s.importSale();
-    //             break;
-    //         default:
-    //             System.out.println("Enter a valid choice");
-    //             break;
-    //     }
-    // }
-
-    // public static void managerImportType(){
-    //     Scanner k = new Scanner(System.in);
-    //     managementEmployee m = new managementEmployee();
-
-    //     System.out.print("Enter 1 to type in sale \nEnter 2 to import sale \nEnter your choice: ");
-    //     int choice = k.nextInt();
-    //     System.out.println();
-
-    //     switch (choice) {
-    //         case 1 :
-    //             m.addSale();
-    //             break;
-    //         case 2 :
-    //             m.importSale();
-    //             break;
-    //         default:
-    //             System.out.println("Enter a valid choice");
-    //             break;
-    //     }
-    // }
+    
     
 
     
