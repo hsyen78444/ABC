@@ -17,6 +17,7 @@ import java.util.Scanner;
  * @author User
  */
 public class Company {
+    ProfitMargin profitMargin = new ProfitMargin();
     
     public Company() {
     }
@@ -24,6 +25,44 @@ public class Company {
     public boolean validateSecretKey(String enteredKey) {
         String secretKey = "leeCars";
         return secretKey.equals(enteredKey);
+    }
+    
+    public static String employeeIDGenerator() {
+        int i = 0;
+        String line = "", ID = "";
+        String[] num = null;
+        String[] id = new String[4];
+        int cnt = id.length - 1;
+        
+        try {
+            BufferedReader inputStream = new BufferedReader(new FileReader("C:\\Users\\User\\Downloads\\employee.csv"));
+            while ((line = inputStream.readLine()) != null){
+                i++;
+            }
+            num = String.valueOf(i).split("");
+            
+            // To put last digit of num to last digit of id
+            for (int j = num.length - 1; j >= 0; j--, cnt--) {
+                id[cnt] = num[j];
+            }
+            
+            //assign null array with zero
+            for (int j = 0; j < id.length; j++) {
+                if (id[j] == null) {
+                    id[j] = "0";
+                }
+            }
+            
+            for (String j: id) {
+                ID += j;
+            }
+            inputStream.close();
+        }catch (FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+        }catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return "E" + ID;
     }
     
     public void registerEmployee(String name, String username, String password) {
@@ -34,19 +73,25 @@ public class Company {
         }catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        System.out.println("Employee " + name + " registered successfully");
+        System.out.println("\nEmployee " + name + " registered successfully");
     }
 
     public void login(String username, String password) {
         String line = "";
+        String[] row = null;
         try {
             BufferedReader inputStream = new BufferedReader(new FileReader("C:\\Users\\User\\Downloads\\employee.csv"));
             while ((line = inputStream.readLine()) != null){
-                String[] row = line.split(",");
+                row = line.split(",");
                 if (row[0].equals(username) && row[3].equals(password)) {
-                    System.out.printf("Welcome, %s!!!\nAccess Level: %s\n", row[1], row[2].equals("0") ? "Sales" : "Management");
+                    System.out.printf("\nWelcome, %s!!!\nAccess Level: %s\n", row[1], row[2].equals("0") ? "Sales" : "Management");
                     inputStream.close();
-                    performLoggedInActions();
+                    if (row[2].equals("0")) {
+                        performLoggedInActions0();
+                    }
+                    else {
+                        performLoggedInActions1();
+                    }
                     return;
                 }
             }
@@ -59,7 +104,7 @@ public class Company {
         }
     }
     
-    private void performLoggedInActions() {
+    private void performLoggedInActions0() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("\nLogged In Actions:");
@@ -69,7 +114,33 @@ public class Company {
 
             switch (choice) {
                 case "1":
-                    System.out.println("Performing action...");
+                    System.out.println("\nPerforming action...");
+                    break;
+
+                case "2":
+                    System.out.println("Logging out.");
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+    
+    private void performLoggedInActions1() {
+        while (true) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("\nLogged In Actions:");
+            System.out.println("1. Perform Action\n2. Logout");
+            System.out.print("Enter your choice: ");
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    System.out.println("\nPerforming action...");
+                    System.out.print("Year of profit margin: ");
+                    String year = scanner.next();
+                    profitMargin.calculator(year);
                     break;
 
                 case "2":
