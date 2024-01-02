@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class ProfitMargin {
     
-    public static ArrayList soldCar(String year){
+    public static ArrayList carSold(String year){
         String line;
         String[] row = null, date = null;
         ArrayList<String> carPlate = new ArrayList<>();
@@ -43,7 +43,7 @@ public class ProfitMargin {
         int revenue = 0;
         String line;
         String[] row = null;
-        ArrayList<String> carPlate = soldCar(year);
+        ArrayList<String> carPlate = carSold(year);
         try {
             BufferedReader inputStream = new BufferedReader(new FileReader("C:\\Users\\User\\Downloads\\vehicle.csv"));
             while ((line = inputStream.readLine()) != null) {
@@ -64,7 +64,7 @@ public class ProfitMargin {
         int modal = 0;
         String line;
         String[] row = null;
-        ArrayList<String> carPlate = soldCar(year);
+        ArrayList<String> carPlate = carSold(year);
         
         try {
             BufferedReader inputStream = new BufferedReader(new FileReader("C:\\Users\\User\\Downloads\\vehicle.csv"));
@@ -88,8 +88,14 @@ public class ProfitMargin {
         double percentage;
         int otherExpanses = 43887;
         
-        netProfit = (double)(revenue(year) - modal(year) - otherExpanses);
-        percentage = (netProfit / revenue(year)) * (double)100;
+        if (modal(year) == 0) {
+            netProfit = 0;
+            percentage = 0;
+        }
+        else {
+            netProfit = (double)(revenue(year) - modal(year) - otherExpanses);
+            percentage = (netProfit / revenue(year)) * (double)100;
+        }
         
         System.out.println("______________________________");
         System.out.printf("|      Year     | %10s |\n", year);
