@@ -87,13 +87,15 @@ public class ProfitMargin {
         double netProfit;
         double percentage;
         int otherExpanses = 43887;
+
+        salary s = new salary();
         
         if (modal(year) == 0) {
             netProfit = 0;
             percentage = 0;
         }
         else {
-            netProfit = (double)(revenue(year) - modal(year) - otherExpanses);
+            netProfit = (double)(revenue(year) - modal(year) - otherExpanses)+s.getTotalSalary();
             percentage = (netProfit / revenue(year)) * (double)100;
         }
         
