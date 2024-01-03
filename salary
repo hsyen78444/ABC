@@ -22,6 +22,11 @@ public class salary {
     }
 
     public double getTotalSalary(){
+        calculation c = new calculation();
+        c.getID();
+        c.sellerSalary();
+        c.managerSalary();
+
         double total = 0;
         for(employee i : collection){
             total += i.getSalary();
