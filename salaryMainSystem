@@ -1,0 +1,50 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class main {
+    private static salary s = new salary();
+    private static calculation c = new calculation();
+
+    public static void main(String[] args) {
+        Scanner k = new Scanner(System.in);
+
+        //run thorugh these method to have all employee ID and salary in arraylist
+        c.getID();
+        c.sellerSalary();
+        c.managerSalary();
+
+        System.out.print("Enter 1 to search employee salary \nEnter 2 to get all employee salary \nEnter your choice:");
+        int choice = k.nextInt();
+        System.out.println();
+
+        switch (choice) {
+            case 1:
+                getEmployeeSalary();
+                break;
+            case 2 :
+                getAllSalary();
+                break;
+            default:
+            System.out.println("Enter a valid choice");
+                break;
+        }
+    }
+
+    //get salary for specific employee
+    public static void getEmployeeSalary(){
+        Scanner k = new Scanner(System.in);
+
+        System.out.print("Enter employee ID:");
+        String id = k.next();
+
+        ArrayList<employee> result = s.searchEmployeeSalary(id);
+        for(employee i : result){
+            System.out.println(i.toString());
+        }
+    }
+
+    //list out all employee id with their salalary
+    public static void getAllSalary(){
+        System.out.println(s.toString());
+    }
+}
