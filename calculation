@@ -1,0 +1,169 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
+
+public class calculation {
+    //initialise salary for manager and seller
+    private final double sellerBasicSalary = 1200;
+    private final double managerBasicSalary = 2200;
+
+    //array list to save all employee ID
+    private static ArrayList<String> sellerSaleID = new ArrayList<>();
+    private static ArrayList<String> managerSaleID = new ArrayList<>();
+
+    //read from employee.csv to get all sale ID and save into array list for seller and manager
+    public void getID(){
+        String line = "";
+        try {
+            Scanner in = new Scanner(new FileInputStream("/Users/zirui/Desktop/JavaProject/leeCar/src/employee-2.csv"));
+            while(in.hasNextLine()){
+                line = in.nextLine();
+                String[] arr = line.split(",");
+                if(arr[2].equals("0")){
+                    sellerSaleID.add(arr[0]);
+                }else if(arr[2].equals("1")){
+                    managerSaleID.add(arr[0]);
+                }
+            }
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //get salary for all seller
+    public void sellerSalary(){
+
+        salary s = new salary();
+
+        //read the saleID from sellerSaleID array list
+        for(String saleID : sellerSaleID){
+            ArrayList<Double> sale = new ArrayList<>();
+
+            double sellerCommission = getSellerCommission(saleID, sale);//calculate commission
+            double sellerAllowance = getsellerAllowance();//check weather the seller have allowance
+            double sellerBonus = getSellerBonus(sale);//get the bonus of the seller
+
+            double salary = this.sellerBasicSalary + sellerCommission + sellerAllowance + getSellerBonus(sale);//calculate salary of the seller
+
+            employee e = new employee(saleID, salary);//declare employee class to use
+            s.addSalary(e);//add the calculated salary and saleID to arraylist in employee class
+        }
+        
+    }
+
+    //get salary for all manager
+    public void managerSalary(){
+        
+        salary s = new salary();
+
+        for(String saleID : sellerSaleID){
+            ArrayList<Double> sale = new ArrayList<>();//araylist to store sale of manager
+
+            double managerCommission = getManagerCommission(saleID, sale);//calculate commission, bonus is included in this part
+            double managerAllowance = getManagerAllowance();//get allowance of manager
+
+            double salary = this.managerBasicSalary + managerAllowance + managerCommission;//sum up the salary of the manager
+
+            employee e = new employee(saleID, salary);//declare employee class to use
+            s.addSalary(e);//add the calculated salary and saleID to arraylist in employee class
+        }
+        
+    }
+
+
+    // //calculation part
+
+    //Allowance calculation
+    public double getsellerAllowance(){
+        Random g = new Random();
+        int number = g.nextInt(2);
+
+        return (number == 1)? 250 : 0;
+    }
+
+    public double getManagerAllowance(){
+        Random g = new Random();
+        int number = g.nextInt(2);
+
+        return (number == 1)? 350 : 0;
+    }
+
+    //commission calculation
+    public double getSellerCommission(Sales[] s, Vehicle[] v, String saleID, ArrayList<Double> sale){
+        double com = 0;
+        String hold = "";
+
+        for(int i=0; i<Sale.record; i++){
+            if(s[i].getEmployeeId.equals(saleID)){
+                hold = s[i].getCarPlate;
+            }for(int j=0; j<Vehicle.record; j++){
+                if(v[i].getCarPlate.equals(hold)){
+                    double num = Double.parseDouble(v[i].getSalesPrice);
+                    sale.add(num);
+                }
+            }
+        }
+
+        for(Double i : sale){
+            com += i*0.01;
+        }
+        return com;
+    }
+
+    public double getManagerCommission(Sales[] s, Vehicle[] v, String saleID, ArrayList<Double> sale){
+        double com = 0;
+        String hold = "";
+
+        for(int i=0; i<Sales.record(); i++){
+            if(s[i].getEmployeeId.equals(saleID)){
+                hold = s[i].getCarPlate();
+            }for(int j=0; j<Vehicle.record(); j++){
+                if(v[i].getCarPlate.equals(hold)){
+                    double num = Double.parseDouble(v[i].getSalesPrice());
+                    sale.add(num);
+                }
+            }
+        }
+
+        for(Double i : sale){
+            com += i*getManagerBonus(sale);
+        }
+        return com;
+    }
+
+    public double getSellerBonus(ArrayList<Double> sale){
+        double ttl = 0;
+        for(Double i : sale){
+            ttl += i;
+        }
+
+        if(sale.size()>15 || ttl>= 1000000){
+            return 500;
+        }else{
+            return 0;
+        }
+    }
+
+    public double getManagerBonus(ArrayList<Double> sale){
+        double ttl = 0;
+        for(Double i : sale){
+            ttl += i;
+        }
+
+        if(ttl <= 800000.00){
+            return 0.01;
+        }else if(ttl>800000.00 && ttl<=1600000.00){
+            return 0.115;
+        }else if(ttl>1600000.00 && ttl<=2500000.00){
+            return 0.0125;
+        }else{
+            return 0.0135;
+        }
+    }
+    
+
+    
+}
