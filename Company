@@ -1,24 +1,20 @@
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Random;
 import java.util.Scanner;
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author User
- */
 public class Company {
     ProfitMargin profitMargin = new ProfitMargin();
-    
+    public static Customer [] c;
+    public static Employee [] e;
+    public static Sales [] s;
+    public static Vehicle []v;  
+
     public Company() {
     }
     
@@ -131,7 +127,7 @@ public class Company {
         while (true) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("\nLogged In Actions:");
-            System.out.println("1. Perform Action\n2. Logout");
+            System.out.println("1. Perform Action\n2. Import Data\n3. Add Employee\n4. Logout");
             System.out.print("Enter your choice: ");
             String choice = scanner.nextLine();
 
@@ -142,8 +138,22 @@ public class Company {
                     String year = scanner.next();
                     profitMargin.calculator(year);
                     break;
-
                 case "2":
+                    String []selection=new String[4];
+                    System.out.println("\nEnter 1 for importing data [customer/employee/sales/vehicle],four rounds required : ");
+                    for(int i=0;i<4;i++)
+                        selection[i]=scanner.next();
+                    c= importCustomer(selection[0]);
+                    e=importEmployee(selection[1]);
+                    s=importSales(selection[2]);
+                    v=importVehicle(selection[3]);
+                    System.out.println("Import data done.");
+                    break;
+                case "3":
+                    e=importEmployee("1");
+                    addManagement();
+                    break;
+                case "4":
                     System.out.println("Logging out.");
                     return;
 
@@ -152,4 +162,120 @@ public class Company {
             }
         }
     }
+    private Customer []importCustomer(String selc){
+            Customer []c=new Customer[9999];
+            if(selc.equals("1")){
+            try{
+            Scanner sc=new Scanner(new FileInputStream("cust.csv"));
+            int i=0;
+            while(sc.hasNextLine()){
+                String [] cust=sc.nextLine().split(",");
+                c[i]=new Customer(cust[0],cust[1],cust[2],cust[3]);
+                i++;
+            }
+            sc.close();
+            }
+            catch(FileNotFoundException e){
+            System.out.printf("ERROR - A %s occurred:\n%s\n",e.getClass().toString(),e.getMessage());
+            }
+            }
+            return c;
+    }
+    private Employee[] importEmployee(String selc){
+        Employee [] e=new Employee[9999];
+        if(selc.equals("1")){
+        try{
+            Scanner sc=new Scanner(new FileInputStream("employee.csv"));
+            int i=0;
+            while(sc.hasNextLine()){
+                String [] emp=sc.nextLine().split(",");
+                e[i]=new Employee(emp[0],emp[1],emp[2],emp[3]);
+                i++;
+            }
+            sc.close();
+        }
+        catch(FileNotFoundException fe){
+            System.out.printf("ERROR - A %s occurred:\n%s\n",fe.getClass().toString(),fe.getMessage());
+        }
+        }
+        return e;
+    }
+    private Sales[] importSales(String selc){
+        Sales [] s=new Sales[9999];
+        if(selc.equals("1")){
+        try{
+            Scanner sc=new Scanner(new FileInputStream("sales.csv"));
+            int i=0;
+            while(sc.hasNextLine()){
+                String [] sale=sc.nextLine().split(",");
+                s[i]=new Sales(sale[0],sale[1],sale[2],sale[3],sale[4]);
+                i++;
+            }
+            sc.close();
+        }
+        catch(FileNotFoundException e){
+            System.out.printf("ERROR - A %s occurred:\n%s\n",e.getClass().toString(),e.getMessage());
+        }
+        }
+        return s;
+    }
+    private Vehicle[] importVehicle(String selc){
+        Vehicle [] v=new Vehicle[10000];
+        if(selc.equals("1")){
+        try{
+            Scanner sc=new Scanner(new FileInputStream("vehicle.csv"));
+            int i=0;
+            while(sc.hasNextLine()){
+                String [] vech=sc.nextLine().split(",");
+                if(vech[3].equals("0"))
+                    v[i]=new Vehicle(vech[0],vech[1],vech[2],vech[3],vech[4]);
+                else if(vech[3].equals("1"))
+                    v[i]=new Vehicle(vech[0],vech[1],vech[2],vech[3],null);
+                i++;
+            }
+            sc.close();
+        }
+        catch(FileNotFoundException e){
+            System.out.printf("ERROR - A %s occurred:\n%s\n",e.getClass().toString(),e.getMessage());
+        }
+        }
+        return v;
+    }
+    public String passwordGenerator(){
+         String upper="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+         String lower="abcdefghijklmnopqrstuvwxyz";
+         String specialChars="<>.?/{}[]+-_()-*&^%$#@!";
+         String num="0123456789";
+         String combination=upper+lower+specialChars+num;
+         char [] password=new char [8];
+         Random r=new Random();
+         for (int i=0;i<8;i++){
+            password[i]=combination.charAt(r.nextInt(combination.length()));
+         }
+         return new String (password);
+    }
+    public void addManagement(){
+        StringBuilder sb=new StringBuilder();
+        String eid=employeeIDGenerator();
+        sb.append(eid);
+        Scanner in=new Scanner(System.in);
+        Scanner scanner=new Scanner(System.in);
+        System.out.println("\n--Adding employee--");
+        System.out.println("Please enter name : ");
+        String name=in.nextLine();
+        System.out.println("Please set the employee status (0 for sales level and 1 for management level ) : ");
+        int status=scanner.nextInt();
+        String pass =passwordGenerator();
+        sb.append(","+name+","+status+","+pass);
+            try{
+                PrintWriter pw=new PrintWriter(new FileOutputStream("employee.csv",true));
+                pw.println(sb.toString());
+                pw.close();
+                System.out.println("Employee added.");
+            }
+            catch(IOException ioe){
+                System.out.printf("ERROR - A %s occurred:\n%s\n",ioe.getClass().toString(),ioe.getMessage());
+            }  
+        e[Employee.record]=new Employee(eid,name,Integer.toString(status),pass);
+        }
 }
