@@ -5,7 +5,7 @@ public class main {
     private static salary s = new salary();
     private static calculation c = new calculation();
 
-    public static void main(String[] args) {
+    public void runSalary(){
         Scanner k = new Scanner(System.in);
 
         //run thorugh these method to have all employee ID and salary in arraylist
