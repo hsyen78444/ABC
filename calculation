@@ -1,30 +1,47 @@
+package Calculation;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 
-public class calculation {
-    //initialise salary for manager and seller
-    private final double sellerBasicSalary = 1200;
-    private final double managerBasicSalary = 2200;
+import CSV_File.*;
 
-    //array list to save all employee ID
-    private static ArrayList<String> sellerSaleID = new ArrayList<>();
-    private static ArrayList<String> managerSaleID = new ArrayList<>();
+public abstract class base{
 
-    //read from employee.csv to get all sale ID and save into array list for seller and manager
-    public void getID(){
-        String line = "";
+    ArrayList<String> sellerSaleId = new ArrayList<String>();
+    ArrayList<String> managerSaleId = new ArrayList<String>();
+
+    //accesor
+    public ArrayList<String> getSellerSaleId(){
+        getID();
+        return this.sellerSaleId;
+    }
+
+    public ArrayList<String> getManagerSaleId(){
+        getID();
+        return this.managerSaleId;
+    }
+
+    public abstract double getSalary();
+
+    public abstract double getAllowance();
+
+    public abstract double bonus();
+
+    public abstract double getCommission();
+
+    
+    private void getID(){
+         String line = "";
         try {
-            Scanner in = new Scanner(new FileInputStream("/Users/zirui/Desktop/JavaProject/leeCar/src/employee-2.csv"));
+            Scanner in = new Scanner(new FileInputStream("/Users/zirui/Desktop/JavaProject/Project/src/CSV_File/employee-2.csv"));
             while(in.hasNextLine()){
                 line = in.nextLine();
                 String[] arr = line.split(",");
                 if(arr[2].equals("0")){
-                    sellerSaleID.add(arr[0]);
+                    sellerSaleId.add(arr[0]);
                 }else if(arr[2].equals("1")){
-                    managerSaleID.add(arr[0]);
+                    managerSaleId.add(arr[0]);
                 }
             }
             in.close();
@@ -33,137 +50,88 @@ public class calculation {
         }
     }
 
-    //get salary for all seller
-    public void sellerSalary(){
+    private ArrayList<String> getCarPlate(String saleID){
+        ArrayList<String> carPlate = new ArrayList<String>();
 
-        salary s = new salary();
-
-        //read the saleID from sellerSaleID array list
-        for(String saleID : sellerSaleID){
-            ArrayList<Double> sale = new ArrayList<>();
-
-            double sellerCommission = getSellerCommission(saleID, sale);//calculate commission
-            double sellerAllowance = getsellerAllowance();//check weather the seller have allowance
-            double sellerBonus = getSellerBonus(sale);//get the bonus of the seller
-
-            double salary = this.sellerBasicSalary + sellerCommission + sellerAllowance + getSellerBonus(sale);//calculate salary of the seller
-
-            employee e = new employee(saleID, salary);//declare employee class to use
-            s.addSalary(e);//add the calculated salary and saleID to arraylist in employee class
+        String line = "";
+        try {
+            Scanner in = new Scanner(new FileInputStream("/Users/zirui/Desktop/JavaProject/Project/src/CSV_File/sales.csv"));
+            while(in.hasNextLine()){
+                line = in.nextLine();
+                String[] arr = line.split(",");
+                if(arr[4].equalsIgnoreCase(saleID)){
+                    carPlate.add(arr[2]);
+                }                
+            }
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+
+        return carPlate;
+    }
+
+    public ArrayList<Double> getSaleRecord(String saleID){
+        ArrayList<String> hold = getCarPlate(saleID);
+        ArrayList<Double> saleRecord = new ArrayList<Double>();
+
         
-    }
-
-    //get salary for all manager
-    public void managerSalary(){
-        
-        salary s = new salary();
-
-        for(String saleID : sellerSaleID){
-            ArrayList<Double> sale = new ArrayList<>();//araylist to store sale of manager
-
-            double managerCommission = getManagerCommission(saleID, sale);//calculate commission, bonus is included in this part
-            double managerAllowance = getManagerAllowance();//get allowance of manager
-
-            double salary = this.managerBasicSalary + managerAllowance + managerCommission;//sum up the salary of the manager
-
-            employee e = new employee(saleID, salary);//declare employee class to use
-            s.addSalary(e);//add the calculated salary and saleID to arraylist in employee class
-        }
-        
-    }
-
-
-    // //calculation part
-
-    //Allowance calculation
-    public double getsellerAllowance(){
-        Random g = new Random();
-        int number = g.nextInt(2);
-
-        return (number == 1)? 250 : 0;
-    }
-
-    public double getManagerAllowance(){
-        Random g = new Random();
-        int number = g.nextInt(2);
-
-        return (number == 1)? 350 : 0;
-    }
-
-    //commission calculation
-    public double getSellerCommission(Sales[] s, Vehicle[] v, String saleID, ArrayList<Double> sale){
-        double com = 0;
-        String hold = "";
-
-        for(int i=0; i<Sale.record; i++){
-            if(s[i].getEmployeeId.equals(saleID)){
-                hold = s[i].getCarPlate;
-            }for(int j=0; j<Vehicle.record; j++){
-                if(v[i].getCarPlate.equals(hold)){
-                    double num = Double.parseDouble(v[i].getSalesPrice);
-                    sale.add(num);
+        for(int i=0; i<hold.size(); i++){
+            String line = "";
+            try {
+                Scanner in = new Scanner(new FileInputStream("/Users/zirui/Desktop/JavaProject/Project/src/CSV_File/vehicle-2.csv"));
+                while(in.hasNextLine()){
+                    line = in.nextLine();
+                    String[] arr = line.split(",");
+                    if(arr[0].equalsIgnoreCase(hold.get(i))){
+                        double price = Double.parseDouble(arr[4]);
+                        saleRecord.add(price);
+                    }                
                 }
+                in.close();
+                } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
         }
 
-        for(Double i : sale){
-            com += i*0.01;
-        }
-        return com;
+        return saleRecord;
+       
     }
 
-    public double getManagerCommission(Sales[] s, Vehicle[] v, String saleID, ArrayList<Double> sale){
-        double com = 0;
-        String hold = "";
-
-        for(int i=0; i<Sales.record(); i++){
-            if(s[i].getEmployeeId.equals(saleID)){
-                hold = s[i].getCarPlate();
-            }for(int j=0; j<Vehicle.record(); j++){
-                if(v[i].getCarPlate.equals(hold)){
-                    double num = Double.parseDouble(v[i].getSalesPrice());
-                    sale.add(num);
-                }
+    public int checkStatus(String id){
+        getID();
+        int num = -1;
+        for(String i : sellerSaleId){
+            if(i.equalsIgnoreCase(id)){
+                num = 0;
+            }
+        }
+        for(String j : managerSaleId){
+            if(j.equalsIgnoreCase(id)){
+                num = 1;
             }
         }
 
-        for(Double i : sale){
-            com += i*getManagerBonus(sale);
-        }
-        return com;
+        return num;
     }
 
-    public double getSellerBonus(ArrayList<Double> sale){
-        double ttl = 0;
-        for(Double i : sale){
-            ttl += i;
+    public double getTotalSalary(){
+        seller s = new seller();
+        manager m = new manager();
+
+        double total = 0;
+
+        for(String i : sellerSaleId){
+            total += s.getSalary(i);
         }
 
-        if(sale.size()>15 || ttl>= 1000000){
-            return 500;
-        }else{
-            return 0;
+        for(String j : managerSaleId){
+            total += m.getSalary(j);
         }
+
+        return total;
     }
-
-    public double getManagerBonus(ArrayList<Double> sale){
-        double ttl = 0;
-        for(Double i : sale){
-            ttl += i;
-        }
-
-        if(ttl <= 800000.00){
-            return 0.01;
-        }else if(ttl>800000.00 && ttl<=1600000.00){
-            return 0.115;
-        }else if(ttl>1600000.00 && ttl<=2500000.00){
-            return 0.0125;
-        }else{
-            return 0.0135;
-        }
-    }
-    
 
     
+     
 }
